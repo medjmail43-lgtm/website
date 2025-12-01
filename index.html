@@ -690,6 +690,84 @@
                 font-size: 0.85rem;
             }
         }
+        /* === تحسينات مخصصة لشريط الفلاتر على الهاتف === */
+@media (max-width: 768px) {
+    .filters-bar {
+        /* 1. تحويل التخطيط إلى صف أفقي قابل للتمرير */
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important; /* يمنع النزول لسطر جديد */
+        overflow-x: auto !important; /* التمرير الأفقي إذا لم يكن هناك مساحة */
+        overflow-y: hidden;
+        justify-content: flex-start !important; /* المحاذاة لليمين (بما أن الموقع RTL) */
+        align-items: center;
+        gap: 10px !important; /* تقليل المسافة بين الأزرار */
+        padding: 15px 15px 20px 15px !important; /* تعديل الحشوات */
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 15px auto 10px auto !important; /* تقليل الهوامش */
+        border-radius: 10px;
+        /* إخفاء شريط التمرير للحصول على مظهر أنظف */
+        scrollbar-width: none; /* لفايرفوكس */
+    }
+
+    /* 2. إخفاء شريط التمرير في المتصفحات التي تستخدم webkit (كروم، سفاري) */
+    .filters-bar::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* 3. تحسين شكل أزرار الفلترة نفسها */
+    .filter-btn {
+        min-width: 135px !important; /* عرض مناسب للجوال */
+        width: auto !important;
+        flex-shrink: 0 !important; /* يمنع الأزرار من الانكماش */
+        padding: 12px 18px !important;
+        font-size: 0.9rem !important;
+        border-radius: 40px !important;
+        text-align: center;
+        white-space: nowrap; /* يمنع كسر النص إلى سطرين */
+    }
+
+    /* 4. تحسين القوائم المنسدلة للفلاتر على الهاتف */
+    .filter-dropdown {
+        position: fixed !important; /* لجعلها تظهر فوق كل شيء */
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        width: 85% !important;
+        max-width: 300px !important;
+        max-height: 60vh !important;
+        overflow-y: auto;
+        z-index: 9999 !important;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9);
+    }
+
+    /* 5. تعديل العناصر الأخرى لتوفير المساحة */
+    .trending-section, #main-content {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 10px auto !important;
+        border-radius: 10px;
+    }
+
+    .navbar {
+        padding: 10px 15px !important;
+    }
+}
+
+/* === تحسينات إضافية للشاشات الصغيرة جداً (أقل من 480px) === */
+@media (max-width: 480px) {
+    .filters-bar {
+        gap: 8px !important;
+        padding: 12px 12px 18px 12px !important;
+    }
+
+    .filter-btn {
+        min-width: 120px !important;
+        padding: 10px 16px !important;
+        font-size: 0.85rem !important;
+    }
+}
     </style>
 </head>
 <body>
@@ -848,4 +926,5 @@
         });
     </script>
 </body>
+
 </html>
