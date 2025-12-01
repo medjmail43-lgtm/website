@@ -204,18 +204,6 @@ function createSliderCard(item) {
   card.innerHTML = `
     <img src="${poster}" alt="${title}" loading="lazy">
     <h3>${title}</h3>
-    <div style="
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background: rgba(0,0,0,0.7);
-      color: white;
-      padding: 2px 6px;
-      border-radius: 10px;
-      font-size: 0.7rem;
-    ">
-      ${langInfo.flag} ${langInfo.name}
-    </div>
   `;
   
   card.onclick = () => {
@@ -249,23 +237,11 @@ function createCardElement(item) {
   const langName = langInfo.name;
   
   card.innerHTML = `
-    <img src="${poster}" alt="${title}" loading="lazy">
-    <div style="padding: 12px; text-align: center;">
-      <h3>${title}</h3>
-      <div style="
-        font-size: 0.8rem; 
-        color: #888; 
-        margin-top: 5px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 5px;
-      ">
-        <span>${langBadge}</span>
-        <span>${langName}</span>
-      </div>
-    </div>
-  `;
+  <img src="${poster}" alt="${title}" loading="lazy">
+  <div style="padding: 12px; text-align: center;">
+    <h3>${title}</h3>
+  </div>
+`;
   
   card.onclick = () => {
     const type = (item.media_type === "movie" || item.type === "movie") ? "movie" : "tv";
@@ -313,7 +289,7 @@ async function showSearchSuggestions(query) {
         <div class="suggestion-info">
           <div class="suggestion-title">${item.title || item.name}</div>
           <div class="suggestion-type">
-            ${typeIcon} ${typeText} • ${langInfo.flag} ${langInfo.name} • ${year || 'غير معروف'}
+          ${typeIcon} ${typeText} • ${langInfo.flag} ${langInfo.name} • ${year || 'غير معروف'}
           </div>
         </div>
       `;
