@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TAFLIM - الأفلام</title>
+<link rel="stylesheet" href="css/styles.css">
+<script src="https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2"></script>
+<style>
+  /* === مربع البحث الذكي (نفس index.html تمامًا) === */
+  .search-container {
+    position: relative;
+    flex: 1;
+    max-width: 340px;
+    margin: 0 12px;
+  }
+  #search {
+    width: 100%;
+    padding: 12px 18px;
+    border: none;
+    border-radius: 50px;
+    background: #1f242a;
+    color: white;
+    font-size: 1rem;
+    transition: all 0.3s;
+  }
+  #search:focus { outline: 2px solid #ff3b3b; background: #2a2f35; }
+
+  #search-suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #161b20;
+    border-radius: 0 0 16px 16px;
+    max-height: 460px;
+    overflow-y: auto;
+    z-index: 999;
+    display: none;
+    box-shadow: 0 12px 35px rgba(0,0,0,0.7);
+    margin-top: 6px;
+  }
+  #search-suggestions.active { display: block; }
+
+  .suggestion-item {
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    cursor: pointer;
+    transition: 0.25s;
+    border-bottom: 1px solid #333;
+  }
+  .suggestion-item:hover { background: #ff3b3b20; }
+  .suggestion-item img {
+    width: 52px;
+    height: 74px;
+    object-fit: cover;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+  }
+  .suggestion-item .info h4 { margin: 0; font-size: 1.02rem; font-weight: 600; }
+  .suggestion-item .info span { font-size: 0.88rem; color: #cccccc; }
+
+  /* === زر التصنيفات === */
+  .filter-container { position: relative; display: inline-block; }
+  .filter-btn {
+    background: #ff3b3b;
+    color: white;
+    border: none;
+    padding: 11px 22px;
+    border-radius: 50px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 4px 15px rgba(255,59,59,0.4);
+    transition: all 0.3s;
+  }
+  .filter-btn:hover { background: #e50914; transform: translateY(-2px); }
+  .filter-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 10px;
+    background: #161b20;
+    border-radius: 14px;
+    min-width: 220px;
+    box-shadow: 0 12px 35px rgba(0,0,0,0.7);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s;
+    z-index: 999;
+    overflow: hidden;
+  }
+  .filter-dropdown.active { opacity: 1; visibility: visible; transform: translateY(0); }
+  .filter-dropdown button {
+    width: 100%;
+    padding: 16px 22px;
+    background: none;
+    border: none;
+    color: white;
+    text-align: right;
+    cursor: pointer;
+    transition: 0.3s;
+    font-weight: 500;
+  }
+  .filter-dropdown button:hover { background: #ff3b3b; padding-right: 30px; }
+
+  /* === موبايل === */
+  @media (max-width: 767px) {
+    .grid-container { grid-template-columns: 1fr 1fr !important; gap: 14px; padding: 16px; }
+    .search-container { max-width: 200px; margin: 0 8px; }
+    .filter-btn { padding: 10px 18px; font-size: 0.95rem; }
+  }
+</style>
+</head>
+<body data-type="movie">
+
+<header class="navbar">
+  <div class="logo">TAFLIM</div>
+
+  <div class="search-container">
+    <input type="text" id="search" placeholder="ابحث عن فيلم..." autocomplete="off">
+    <div id="search-suggestions"></div>
+  </div>
+
+  <div class="filter-container">
+    <button class="filter-btn" id="filter-btn">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5">
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <line x1="7" y1="12" x2="21" y2="12"></line>
+        <line x1="11" y1="18" x2="21" y2="18"></line>
+        <circle cx="5" cy="6" r="2"></circle>
+        <circle cx="5" cy="12" r="2"></circle>
+        <circle cx="9" cy="18" r="2"></circle>
+      </svg>
+      التصنيفات
+      <svg class="arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3">
+        <polyline points="6 9 12 15 18 9"></polyline>
+      </svg>
+    </button>
+    <div class="filter-dropdown" id="filter-dropdown">
+      <button data-value="">كل التصنيفات</button>
+      <button data-value="28">أكشن</button>
+      <button data-value="12">مغامرات</button>
+      <button data-value="16">أنيميشن</button>
+      <button data-value="35">كوميدي</button>
+      <button data-value="80">جريمة</button>
+      <button data-value="18">دراما</button>
+      <button data-value="27">رعب</button>
+      <button data-value="10749">رومانسي</button>
+      <button data-value="878">خيال علمي</button>
+      <button data-value="53">إثارة</button>
+      <button data-value="10752">حرب</button>
+      <button data-value="37">غربي</button>
+    </div>
+  </div>
+
+  <!-- زر البرغر صحيح: ☰ -->
+  <button id="menu-btn">☰</button>
+  <select id="filter" style="display:none"></select>
+
+  <div class="sidebar" id="sidebar">
+    <button id="close-sidebar">×</button>
+    <a href="index.html">الرئيسية</a>
+    <a href="movies.html">الأفلام</a>
+    <a href="series.html">المسلسلات</a>
+    <a href="anime.html">أنمي وكرتون</a>
+    <a href="categories.html">التصنيفات</a>
+  </div>
+</header>
+
+<main>
+  <div id="content-grid" class="grid-container"></div>
+  <div id="pagination" class="pagination"></div>
+</main>
+
+<footer><p>© 2025 TAFLIM</p></footer>
+
+<script src="js/movies.js"></script>
+<script>
+  // === البحث الذكي الفائق (نفس index.html) ===
+  let data = [], timer;
+  async function loadData() {
+    if (data.length) return;
+    const res = await fetch("https://api.themoviedb.org/3/movie/popular?api_key=dbb14198ea29a547de77343dc3fe7a37&language=ar&page=1,2,3");
+    const json = await res.json();
+    data = json.results.filter(i=>i.poster_path);
+  }
+  const box = document.getElementById('search-suggestions');
+  document.getElementById('search').addEventListener('input', () => {
+    clearTimeout(timer);
+    const q = document.getElementById('search').value.trim().toLowerCase();
+    box.innerHTML=''; box.classList.remove('active');
+    if(!q) return;
+    timer = setTimeout(() => {
+      const results = data.filter(i=>(i.title||'').toLowerCase().includes(q)||(i.original_title||'').toLowerCase().includes(q)).slice(0,8);
+      if(!results.length) box.innerHTML = '<div class="suggestion-item" style="justify-content:center;color:#999;padding:20px">لا توجد نتائج</div>';
+      else results.forEach(i=> box.innerHTML += `<div class="suggestion-item" onclick="location.href='details.html?type=movie&id=${i.id}'"><img src="https://image.tmdb.org/t/p/w92${i.poster_path}"><div class="info"><h4>${i.title}</h4><span>فيلم • ${i.release_date?.split('-')[0]||''}</span></div></div>`);
+      box.classList.add('active');
+    }, 300);
+  });
+  document.addEventListener('click', e=>{ if(!e.target.closest('.search-container')) box.classList.remove('active'); });
+  loadData();
+
+  // === Dropdown a dropdown للتصنيفات ===
+  const btn = document.getElementById('filter-btn');
+  const drop = document.getElementById('filter-dropdown');
+  const sel = document.getElementById('filter');
+  btn.addEventListener('click', () => drop.classList.toggle('active'));
+  drop.querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
+    sel.value = b.dataset.value; sel.dispatchEvent(new Event('change'));
+    btn.innerHTML = `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="7" y1="12" x2="21" y2="12"></line><line x1="11" y1="18" x2="21" y2="18"></line><circle cx="5" cy="6" r="2"></circle><circle cx="5" cy="12" r="2"></circle><circle cx="9" cy="18" r="2"></circle></svg> ${b.textContent} <svg class="arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"></polyline></svg>`;
+    drop.classList.remove('active');
+  }));
+  document.addEventListener('click', e => { if(!btn.contains(e.target) && !drop.contains(e.target)) drop.classList.remove('active'); });
+</script>
+</body>
+</html>

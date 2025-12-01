@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>فتح حساب جديد - TAFLIM</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-color:#0b0f12;
+    --card-bg:#161b20;
+    --accent:#ff3b3b;
+    --text-color:#e6e6e6;
+    --hover-bg:#1f242a;
+    --transition:0.3s ease;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;font-family:"Tajawal",sans-serif;}
+  body{
+    background:var(--bg-color);
+    color:var(--text-color);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    flex-direction: column;
+  }
+
+  .back-link {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-size: 1.2em;
+    color: var(--text-color);
+    text-decoration: none;
+    transition: var(--transition);
+  }
+  .back-link:hover {
+    color: var(--accent);
+  }
+
+  .register-container{
+    background:var(--card-bg);
+    padding:30px 25px;
+    border-radius:12px;
+    width:100%;
+    max-width:400px;
+    box-shadow:0 6px 20px rgba(0,0,0,0.5);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .register-container h2{
+    text-align:center;
+    margin-bottom:20px;
+    color:var(--accent);
+  }
+
+  .register-container label{
+    display:block;
+    margin:10px 0 5px;
+    font-weight:500;
+  }
+
+  .register-container input{
+    width:100%;
+    padding:10px;
+    border-radius:8px;
+    border:none;
+    background:var(--hover-bg);
+    color:var(--text-color);
+    font-size:1em;
+  }
+
+  .register-container input:focus{
+    outline:none;
+    box-shadow:0 0 5px var(--accent);
+  }
+
+  .register-container button{
+    width:100%;
+    margin-top:15px;
+    padding:10px;
+    border:none;
+    border-radius:8px;
+    background:var(--accent);
+    color:#fff;
+    font-size:1em;
+    font-weight:bold;
+    cursor:pointer;
+    transition:var(--transition);
+  }
+
+  .register-container button:hover{
+    background:#e63939;
+  }
+
+  /* --------------------- قسم تسجيل بحساب خارجي --------------------- */
+  .social-login{
+    margin-top:20px;
+    text-align:center;
+  }
+
+  .divider{
+    margin:15px 0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  .divider span{
+    margin:0 10px;
+    color:#777;
+  }
+
+  .divider:before,
+  .divider:after{
+    content:"";
+    flex:1;
+    height:1px;
+    background:#2c2c2c;
+  }
+
+  .social-btn{
+    width:100%;
+    padding:10px;
+    border-radius:8px;
+    margin-top:10px;
+    cursor:pointer;
+    font-weight:bold;
+    border:none;
+    transition:var(--transition);
+  }
+
+  .google-btn{
+    background:#ffffff;
+    color:#000;
+  }
+  .google-btn:hover{
+    background:#dddddd;
+  }
+
+  .facebook-btn{
+    background:#1877f2;
+    color:#fff;
+  }
+  .facebook-btn:hover{
+    background:#0f5ad0;
+  }
+
+</style>
+</head>
+<body>
+
+<a href="login.html" class="back-link">← العودة</a>
+
+<div class="register-container">
+  <h2>فتح حساب جديد</h2>
+
+  <label for="email">الإيميل</label>
+  <input type="email" id="email" placeholder="ادخل الإيميل">
+
+  <label for="new-username">اسم المستخدم</label>
+  <input type="text" id="new-username" placeholder="ادخل اسم المستخدم">
+
+  <label for="new-password">كلمة المرور</label>
+  <input type="password" id="new-password" placeholder="ادخل كلمة المرور">
+
+  <label for="confirm-password">تأكيد كلمة المرور</label>
+  <input type="password" id="confirm-password" placeholder="أعد كتابة كلمة المرور">
+
+  <button id="register-btn">إنشاء الحساب</button>
+
+  <!-- تسجيل عبر جوجل وفيسبوك -->
+  <div class="social-login">
+    <div class="divider"><span>أو</span></div>
+
+    <button class="social-btn google-btn">التسجيل عبر Google</button>
+    <button class="social-btn facebook-btn">التسجيل عبر Facebook</button>
+  </div>
+
+</div>
+
+<script>
+  const registerBtn = document.getElementById('register-btn');
+
+  registerBtn.addEventListener('click', () => {
+    alert("سيتم إنشاء الحساب لاحقًا بعد ربط الباكند.");
+  });
+</script>
+
+</body>
+</html>

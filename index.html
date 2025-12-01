@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TAFLIM | الصفحة الرئيسية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --accent: #ff3b3b;
+            --bg: #0b0f12;
+            --card: #161b20;
+            --text: #e6e6e6;
+            --font-main: 'Tajawal', system-ui;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--font-main);
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* ========== النافبار ========== */
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 20px;
+            background: linear-gradient(135deg, #000000 0%, #0b0f12 100%);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 59, 59, 0.3);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        /* زر البرغر */
+        #menu-btn {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+            width: 44px;
+            height: 44px;
+            background: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            cursor: pointer;
+            padding: 10px;
+            transition: all 0.3s;
+        }
+
+        #menu-btn span {
+            display: block;
+            width: 25px;
+            height: 3px;
+            background: white;
+            border-radius: 3px;
+            transition: all 0.3s;
+        }
+
+        #menu-btn:hover {
+            border-color: var(--accent);
+            background: rgba(255, 59, 59, 0.1);
+        }
+
+        #menu-btn:hover span {
+            background: var(--accent);
+            transform: scaleX(1.2);
+        }
+
+        /* شريط البحث مع الاقتراحات */
+        .search-container {
+            position: relative;
+            flex: 1;
+            max-width: 500px;
+            margin: 0 20px;
+        }
+
+        #search {
+            width: 100%;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 50px;
+            background: #1f242a;
+            color: white;
+            font-size: 1rem;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+            font-family: var(--font-main);
+        }
+
+        #search:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 15px rgba(255, 59, 59, 0.3);
+        }
+
+        /* قائمة اقتراحات البحث */
+        .search-suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: var(--card);
+            border-radius: 0 0 15px 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+            max-height: 400px;
+            overflow-y: auto;
+            display: none;
+            z-index: 1001;
+            margin-top: 2px;
+            border: 1px solid #333;
+        }
+
+        .suggestion-item {
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            border-bottom: 1px solid #2a2f35;
+            transition: background 0.2s;
+        }
+
+        .suggestion-item:hover {
+            background: rgba(255, 59, 59, 0.1);
+        }
+
+        .suggestion-item img {
+            width: 50px;
+            height: 70px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        .suggestion-info {
+            flex: 1;
+        }
+
+        .suggestion-title {
+            font-weight: bold;
+            color: var(--text);
+            margin-bottom: 5px;
+        }
+
+        .suggestion-type {
+            font-size: 0.85rem;
+            color: #888;
+        }
+
+        .suggestion-year {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .no-results {
+            padding: 20px;
+            text-align: center;
+            color: #888;
+            font-style: italic;
+        }
+
+        /* اللوجو */
+        .logo {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--accent);
+            text-shadow: 0 2px 10px rgba(255, 59, 59, 0.3);
+        }
+
+        /* ========== السايدبار ========== */
+        #overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.88);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.35s;
+            z-index: 1500;
+        }
+
+        #overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        #sidebar {
+            position: fixed;
+            top: 0;
+            right: -320px;
+            width: 300px;
+            height: 100%;
+            background: #111;
+            transition: right 0.35s ease;
+            z-index: 2000;
+            padding-top: 90px;
+            box-shadow: -10px 0 30px rgba(0, 0, 0, 0.9);
+        }
+
+        #sidebar.show {
+            right: 0;
+        }
+
+        #close-sidebar {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 2.4rem;
+            cursor: pointer;
+            transition: .3s;
+        }
+
+        #close-sidebar:hover {
+            color: var(--accent);
+            transform: scale(1.2);
+        }
+
+        #sidebar ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        #sidebar ul li {
+            border-bottom: 1px solid #333;
+        }
+
+        #sidebar ul li a {
+            display: block;
+            padding: 22px 30px;
+            color: white;
+            text-decoration: none;
+            font-size: 1.4rem;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        #sidebar ul li:hover {
+            background: var(--accent);
+        }
+
+        #sidebar ul li:hover a {
+            padding-right: 40px;
+        }
+
+        /* ========== الفلاتر ========== */
+        .filters-bar {
+            display: flex;
+            gap: 15px;
+            padding: 20px;
+            background: #111;
+            flex-wrap: wrap;
+            justify-content: center;
+            position: relative;
+            margin: 20px auto;
+            width: 95%;
+            max-width: 1200px;
+            border-radius: 12px;
+        }
+
+        .filter-group {
+            position: relative;
+        }
+
+        .filter-btn {
+            background: #222;
+            color: white;
+            border: 2px solid transparent;
+            padding: 12px 24px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 150px;
+            justify-content: center;
+            font-size: 0.95rem;
+            font-family: var(--font-main);
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 59, 59, 0.3);
+        }
+
+        .filter-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a1f25;
+            min-width: 220px;
+            border-radius: 16px;
+            margin-top: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, .8);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 999;
+            overflow: hidden;
+            border: 1px solid #333;
+        }
+
+        .filter-dropdown.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(5px);
+        }
+
+        .filter-dropdown button {
+            width: 100%;
+            padding: 14px 20px;
+            background: none;
+            border: none;
+            color: white;
+            text-align: right;
+            cursor: pointer;
+            transition: .3s;
+            font-weight: 500;
+            border-bottom: 1px solid #333;
+            font-family: var(--font-main);
+        }
+
+        .filter-dropdown button:last-child {
+            border-bottom: none;
+        }
+
+        .filter-dropdown button:hover {
+            background: var(--accent);
+            padding-right: 30px;
+        }
+
+        .filter-dropdown button::before {
+            content: "○";
+            margin-left: 10px;
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .filter-dropdown button.active::before {
+            content: "●";
+            color: var(--accent);
+        }
+
+        /* ========== السلايدر ========== */
+        .trending-section {
+            padding: 30px 20px;
+            background: linear-gradient(135deg, #111 0%, #1a1a1a 100%);
+            position: relative;
+            overflow: hidden;
+            margin: 20px auto;
+            border-radius: 15px;
+            width: 98%;
+            max-width: 1200px;
+        }
+
+        .trending-title {
+            font-size: 1.9rem;
+            color: var(--accent);
+            margin-bottom: 25px;
+            text-align: center;
+            font-weight: 700;
+            text-shadow: 0 2px 10px rgba(255, 59, 59, 0.3);
+        }
+
+        .trending-wrapper {
+            position: relative;
+            overflow: visible;
+            border-radius: 15px;
+            padding: 10px 0;
+        }
+
+        .trending-container {
+            display: flex;
+            gap: 20px;
+            padding: 15px 60px;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            scrollbar-width: thin;
+            scrollbar-color: var(--accent) #222;
+        }
+
+        .trending-container::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .trending-container::-webkit-scrollbar-track {
+            background: #222;
+            border-radius: 10px;
+        }
+
+        .trending-container::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 10px;
+        }
+
+        .trending-container::-webkit-scrollbar-thumb:hover {
+            background: #ff0000;
+        }
+
+        .trending-card {
+            min-width: 180px;
+            max-width: 180px;
+            background: var(--card);
+            border-radius: 15px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+            flex-shrink: 0;
+            border: 2px solid transparent;
+        }
+
+        .trending-card:hover {
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 20px 40px rgba(255, 59, 59, 0.4);
+            border-color: var(--accent);
+        }
+
+        .trending-card img {
+            width: 100%;
+            height: 240px;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .trending-card:hover img {
+            transform: scale(1.1);
+        }
+
+        .trending-card h3 {
+            padding: 15px 10px;
+            text-align: center;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text);
+            margin: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .trending-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.8rem;
+            z-index: 10;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .trending-arrow:hover {
+            background: var(--accent);
+            transform: translateY(-50%) scale(1.15);
+            border-color: var(--accent);
+            box-shadow: 0 10px 25px rgba(255, 59, 59, 0.5);
+        }
+
+        .trending-arrow.left {
+            left: 10px;
+        }
+
+        .trending-arrow.right {
+            right: 10px;
+        }
+
+        /* ========== المحتوى الرئيسي ========== */
+        #main-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            min-height: 60vh;
+            width: 95%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: 14px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: .3s;
+            border: 2px solid transparent;
+        }
+
+        .card:hover {
+            transform: scale(1.06);
+            box-shadow: 0 12px 25px rgba(255, 59, 59, .4);
+            border-color: var(--accent);
+        }
+
+        .card img {
+            width: 100%;
+            height: 230px;
+            object-fit: cover;
+        }
+
+        .card h3 {
+            padding: 12px;
+            text-align: center;
+            font-size: 0.95rem;
+            margin: 0;
+        }
+
+        /* زر جلب المزيد */
+        .load-more {
+            display: block;
+            margin: 40px auto;
+            padding: 15px 45px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: .3s;
+            box-shadow: 0 5px 20px rgba(255, 59, 59, 0.3);
+            font-family: var(--font-main);
+        }
+
+        .load-more:hover {
+            background: #cc0000;
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(255, 59, 59, 0.5);
+        }
+
+        /* زر العودة للأعلى */
+        #back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            font-size: 1.8rem;
+            cursor: pointer;
+            display: none;
+            z-index: 999;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, .6);
+            transition: all 0.3s ease;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #back-to-top.show {
+            display: flex;
+        }
+
+        #back-to-top:hover {
+            background: #cc0000;
+            transform: scale(1.15) rotate(5deg);
+            box-shadow: 0 12px 30px rgba(255, 59, 59, .5);
+        }
+
+        /* ========== الفوتر ========== */
+        footer {
+            text-align: center;
+            padding: 30px;
+            background: #000;
+            color: #aaa;
+            margin-top: 50px;
+        }
+
+        .footer-content p {
+            margin: 5px 0;
+        }
+
+        .footer-tagline {
+            font-size: 0.9rem;
+            color: #888;
+            margin-top: 10px;
+        }
+
+        /* ========== التجاوب ========== */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 12px 15px;
+            }
+
+            #menu-btn {
+                width: 40px;
+                height: 40px;
+            }
+
+            #menu-btn span {
+                width: 22px;
+                height: 2.5px;
+            }
+
+            .search-container {
+                max-width: 200px;
+            }
+
+            .logo {
+                font-size: 1.6rem;
+            }
+
+            .trending-card {
+                min-width: 160px;
+                max-width: 160px;
+            }
+
+            .trending-arrow {
+                display: none;
+            }
+
+            .trending-container {
+                padding: 15px 20px;
+            }
+
+            .filters-bar {
+                flex-direction: column;
+                align-items: center;
+                gap: 12px;
+                padding: 15px;
+            }
+
+            .filter-dropdown {
+                position: static;
+                transform: none !important;
+                width: 90%;
+                margin: 8px auto;
+            }
+
+            #main-content {
+                grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+                gap: 15px;
+                padding: 15px;
+            }
+
+            #back-to-top {
+                width: 50px;
+                height: 50px;
+                bottom: 20px;
+                right: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .trending-card {
+                min-width: 140px;
+                max-width: 140px;
+            }
+
+            .trending-card h3 {
+                font-size: 0.9rem;
+            }
+
+            .card h3 {
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- الشريط العلوي -->
+    <header class="navbar">
+        <button id="menu-btn" aria-label="فتح القائمة الجانبية">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        
+        <div class="search-container">
+            <input type="text" id="search" placeholder="ابحث عن فيلم أو مسلسل أو أنمي...">
+            <div id="search-suggestions" class="search-suggestions"></div>
+        </div>
+        
+        <div class="logo">TAFLIM</div>
+    </header>
+
+    <!-- طبقة التعتيم -->
+    <div id="overlay"></div>
+
+    <!-- القائمة الجانبية -->
+    <div id="sidebar">
+        <button id="close-sidebar">×</button>
+        <ul>
+            <li><a href="index.html" class="sidebar-link active">🏠 الصفحة الرئيسية</a></li>
+            <li><a href="movies.html" class="sidebar-link">🎬 الأفلام</a></li>
+            <li><a href="series.html" class="sidebar-link">📺 المسلسلات</a></li>
+            <li><a href="anime.html" class="sidebar-link">🇯🇵 الأنمي</a></li>
+        </ul>
+    </div>
+
+    <!-- تبويبات الفلترة -->
+    <div class="filters-bar">
+        <div class="filter-group">
+            <button class="filter-btn" data-filter="category">فئة العرض ▼</button>
+            <div class="filter-dropdown">
+                <button data-value="">الكل</button>
+                <button data-value="foreign">أفلام أجنبي</button>
+                <button data-value="asian">أفلام آسيوية</button>
+                <button data-value="kdrama">كي دراما</button>
+                <button data-value="turkish">أفلام تركية</button>
+                <button data-value="arabic">أفلام عربية</button>
+                <button data-value="indian">أفلام هندية</button>
+                <button data-value="anime">مسلسلات أنمي</button>
+                <button data-value="ramadan">مسلسلات رمضانية</button>
+            </div>
+        </div>
+
+        <div class="filter-group">
+            <button class="filter-btn" data-filter="genre">نوع العرض ▼</button>
+            <div class="filter-dropdown">
+                <button data-value="">الكل</button>
+                <button data-value="28">أكشن</button>
+                <button data-value="12">مغامرات</button>
+                <button data-value="16">أنيميشن</button>
+                <button data-value="35">كوميدي</button>
+                <button data-value="80">جريمة</button>
+                <button data-value="18">دراما</button>
+                <button data-value="27">رعب</button>
+                <button data-value="10749">رومانسي</button>
+                <button data-value="878">خيال علمي</button>
+                <button data-value="53">إثارة</button>
+            </div>
+        </div>
+
+        <div class="filter-group">
+            <button class="filter-btn" data-filter="year">سنة العرض ▼</button>
+            <div class="filter-dropdown">
+                <button data-value="">الكل</button>
+                <button data-value="2025">2025</button>
+                <button data-value="2024">2024</button>
+                <button data-value="2023">2023</button>
+                <button data-value="2022">2022</button>
+                <button data-value="2021">2021</button>
+                <button data-value="2020">2020</button>
+                <button data-value="older">قبل 2020</button>
+            </div>
+        </div>
+
+        <div class="filter-group">
+            <button class="filter-btn" data-filter="rating">الوضع العائلي ▼</button>
+            <div class="filter-dropdown">
+                <button data-value="">الكل</button>
+                <button data-value="family">عائلي</button>
+                <button data-value="16">+16</button>
+                <button data-value="18">+18</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- السلايدر -->
+    <div class="trending-section">
+        <h2 class="trending-title">🔥 الأكثر مشاهدة</h2>
+        <div class="trending-wrapper">
+            <button class="trending-arrow left">‹</button>
+            <div class="trending-container" id="trending-container"></div>
+            <button class="trending-arrow right">›</button>
+        </div>
+    </div>
+
+    <!-- المحتوى الرئيسي -->
+    <div id="main-content"></div>
+
+    <!-- زر جلب المزيد -->
+    <button class="load-more" onclick="loadMore()">🔄 جلب المزيد</button>
+
+    <!-- زر العودة للأعلى -->
+    <button id="back-to-top" class="show">↑</button>
+
+    <!-- الفوتر -->
+    <footer>
+        <div class="footer-content">
+            <p>© 2025 TAFLIM - جميع الحقوق محفوظة</p>
+            <p class="footer-tagline">🎞️ وجهتك الأولى لمشاهدة أفضل الأفلام والمسلسلات</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="js/main.js"></script>
+    
+    <!-- كود التبويبات فقط (لا يتعارض مع main.js) -->
+    <script>
+        // جافاسكريبت التبويبات فقط
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.onclick = (e) => {
+                const dropdown = btn.nextElementSibling;
+                const isActive = dropdown.classList.contains('active');
+
+                document.querySelectorAll('.filter-dropdown').forEach(d => d.classList.remove('active'));
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+
+                if (!isActive) {
+                    dropdown.classList.add('active');
+                    btn.classList.add('active');
+                }
+                e.stopPropagation();
+            };
+        });
+
+        document.querySelectorAll('.filter-dropdown button').forEach(item => {
+            item.onclick = (e) => {
+                const dropdown = item.closest('.filter-dropdown');
+                dropdown.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+                item.classList.add('active');
+                dropdown.classList.remove('active');
+                item.closest('.filter-group').querySelector('.filter-btn').classList.remove('active');
+                e.stopPropagation();
+            };
+        });
+
+        document.addEventListener('click', () => {
+            document.querySelectorAll('.filter-dropdown').forEach(d => d.classList.remove('active'));
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        });
+    </script>
+</body>
+</html>
